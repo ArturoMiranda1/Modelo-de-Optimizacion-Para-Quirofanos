@@ -1,8 +1,7 @@
 from Data_Base import*
-from Obtener_Datos import*
 
 
-class VisualizacionDatos(DataBase, ObtenerDatos):
+class VisualizacionDatos(DataBase):
     def __init__(self):
         super().__init__()
         self.database = DataBase()
