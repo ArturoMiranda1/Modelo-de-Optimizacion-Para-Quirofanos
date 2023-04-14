@@ -1,7 +1,8 @@
 from Data_Base import*
+from Obtener_Datos import*
 
 
-class VisualizacionDatos(DataBase):
+class VisualizacionDatos(DataBase, ObtenerDatos):
     def __init__(self):
         super().__init__()
         self.database = DataBase()
@@ -13,10 +14,10 @@ class VisualizacionDatos(DataBase):
 
     def accion(self):
         print('Opciones de visualizacion:\n 1.Ver datos.\n 2.Filtrar por especialidad.\n 3.Filtrar solo por estado.')
-        self.accion = input('Que quiere hacer?: ')
+        self.accion = input('Ingrese el numero de la accion que quiere hacer: ')
         while self.accion != '1' and self.accion != '2' and self.accion != '3':
             print('Ingrese una respuesta valida: ')
-            self.accion = input('Que quiere hacer?: ')
+            self.accion = input('Ingrese el numero de la accion que quiere hacer: ')
         if self.accion == '1':
             self.ver_datos()
         elif self.accion == '2':
@@ -36,14 +37,13 @@ class VisualizacionDatos(DataBase):
             print('Entrada incorrecta')
             self.especialidad = input('Ingrese la especialidad por la que quiere filtrar: ')
             self.lista = self.database.agrupar_especialidad(self.especialidad)
-        self.agrupar_estado = input('Quiere filtrar tambien por estado?: ')
-        while self.agrupar_estado.lower() != 'si' and self.agrupar_estado.lower() != 'no':
+        self.agrupar_estado = input('Quiere filtrar tambien por estado?(s/n): ')
+        while self.agrupar_estado.lower() != 's' and self.agrupar_estado.lower() != 'n':
             print('Entrada incorrecta')
-            self.agrupar_estado = input('Quiere filtrar tambien por estado?: ')
-        if self.agrupar_estado.lower() == 'si':
+            self.agrupar_estado = input('Quiere filtrar tambien por estado?(s/n): ')
+        if self.agrupar_estado.lower() == 's':
             self.agrupar_especialidad_estado(self.especialidad)
-            self.close_database()
-        elif self.agrupar_estado.lower() == 'no':
+        elif self.agrupar_estado.lower() == 'n':
             self.close_database()
 
 
@@ -77,7 +77,6 @@ class VisualizacionDatos(DataBase):
             else:
                 self.database.ver_por_estados(self.estado_todos)       
         self.close_database()
-
 
 
 nueva_viualizacion = VisualizacionDatos()
