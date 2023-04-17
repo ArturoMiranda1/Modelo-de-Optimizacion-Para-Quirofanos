@@ -12,7 +12,7 @@ class VisualizacionDatos(DataBase):
 
 
     def accion(self):
-        print('Opciones de visualizacion:\n 1.Ver datos.\n 2.Filtrar por especialidad.\n 3.Filtrar solo por estado.')
+        print('Opciones de visualizacion:\n 1.Ver todos los pacientes.\n 2.Filtrar por especialidad.\n 3.Filtrar solo por estado.')
         self.accion = input('Ingrese el numero de la accion que quiere hacer: ')
         while self.accion != '1' and self.accion != '2' and self.accion != '3':
             print('Ingrese una respuesta valida: ')
