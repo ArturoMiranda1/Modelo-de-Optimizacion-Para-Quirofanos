@@ -12,7 +12,7 @@ cursor = conexion.cursor()
 
 # Crear ventana
 ventana = tk.Tk()
-ventana.title("Selección de Médico")
+ventana.title("API Base de Datos")
 
 # Dimensiones de la ventana
 ancho_ventana = 500
@@ -32,6 +32,7 @@ ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{x_pos}+{y_pos}")
 # Variables de control
 especialidad_seleccionada = tk.StringVar()
 medico_seleccionado = tk.StringVar()
+cirugia_seleccionada = tk.StringVar()
 
 # Función para obtener los médicos según la especialidad seleccionada
 def obtener_medicos():
@@ -51,6 +52,29 @@ def obtener_medicos():
     # Limpiar cuadro de especialista seleccionado
     medico_seleccionado.set("")
 
+    # Limpiar cuadro de cirugías
+    cuadro_cirugias.delete(0, tk.END)
+    cirugia_seleccionada.set("")
+
+
+def obtener_cirugias():
+    especialidad = especialidad_seleccionada.get()
+
+    # Limpiar cuadro de cirugías antes de cargar nuevos datos
+    cuadro_cirugias.delete(0, tk.END)
+
+    # Consulta a la base de datos
+    consulta = "SELECT nombre_cirugia FROM cirugias WHERE especialidad = %s"
+    cursor.execute(consulta, (especialidad,))
+
+    # Obtener y mostrar los resultados en el cuadro de cirugías
+    for row in cursor.fetchall():
+        cuadro_cirugias.insert(tk.END, row[0])
+
+    # Limpiar cuadro de cirugia seleccionada
+    cirugia_seleccionada.set("")
+
+
 # Obtener las especialidades desde la base de datos
 consulta_especialidades = "SELECT DISTINCT especialidad FROM EE"
 cursor.execute(consulta_especialidades)
@@ -63,7 +87,7 @@ cuadro_especialidades = tk.OptionMenu(ventana, especialidad_seleccionada, *espec
 cuadro_especialidades.pack()
 
 # Botón para obtener los médicos según la especialidad seleccionada
-boton_obtener_medicos = tk.Button(ventana, text="Ver nombres", command=obtener_medicos)
+boton_obtener_medicos = tk.Button(ventana, text="Especialistas", command=obtener_medicos)
 boton_obtener_medicos.pack()
 
 # Cuadro de médicos
@@ -74,15 +98,40 @@ cuadro_medicos.pack()
 cuadro_especialista = tk.Entry(ventana, textvariable=medico_seleccionado, width=50, state="readonly")
 cuadro_especialista.pack()
 
+# Botón para obtener las cirugías de la especialidad seleccionada
+boton_obtener_cirugias = tk.Button(ventana, text="Cirugias", command=obtener_cirugias)
+boton_obtener_cirugias.pack()
 
-# Asignar el nombre del especialista seleccionado al cuadro de texto
+# Cuadro de cirugías
+cuadro_cirugias = tk.Listbox(ventana, width=50, height=10)
+cuadro_cirugias.pack()
+
+# Cuadro de cirugía seleccionada
+cuadro_cirugia_seleccionada = tk.Entry(ventana, textvariable=cirugia_seleccionada, width=50, state="readonly")
+cuadro_cirugia_seleccionada.pack()
+
+
+# Asignar el nombre de la cirugía seleccionada al cuadro de texto
+def seleccionar_cirugia(event):
+    widget = event.widget
+    if widget.curselection():
+        indice = int(widget.curselection()[0])
+        nombre_cirugia = widget.get(indice)
+        cirugia_seleccionada.set(nombre_cirugia)
+
+cuadro_cirugias.bind("<<ListboxSelect>>", seleccionar_cirugia)
+
+
+# Asignar el nombre del médico seleccionado al cuadro de texto
 def seleccionar_medico(event):
     widget = event.widget
-    indice = int(widget.curselection()[0])
-    nombre_medico = widget.get(indice)
-    medico_seleccionado.set(nombre_medico)
+    if widget.curselection():
+        indice = int(widget.curselection()[0])
+        nombre_medico = widget.get(indice)
+        medico_seleccionado.set(nombre_medico)
 
 cuadro_medicos.bind("<<ListboxSelect>>", seleccionar_medico)
+
 
 # Ejecutar interfaz
 ventana.mainloop()
